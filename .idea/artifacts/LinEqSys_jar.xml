@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="LinEqSys:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/LinEqSys_jar</output-path>
+    <root id="archive" name="LinEqSys.jar">
+      <element id="module-output" name="LinEqSys" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
