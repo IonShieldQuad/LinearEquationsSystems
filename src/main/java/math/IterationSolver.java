@@ -54,21 +54,10 @@ public class IterationSolver implements LinearSolver {
 
         List<Double> norms = new ArrayList<>();
         Double norm;
-        List<Double> values = new ArrayList<>();
-    
-        for (int i = 0; i < alpha.sizeX(); i++) {
-            values.add(alpha.sumColumn(i, Math::abs));
-        }
-        norms.add(values.stream().reduce(values.get(0), Math::max));
         
-        values.clear();
-    
-        for (int i = 0; i < alpha.sizeY(); i++) {
-            values.add(alpha.sumRow(i, Math::abs));
-        }
-        norms.add(values.stream().reduce(values.get(0), Math::max));
-        
-        norms.add(Math.sqrt(alpha.sum(d -> d * d)));
+        norms.add(alpha.columnNorm());
+        norms.add(alpha.rowNorm());
+        norms.add(alpha.abs());
         
         norms.forEach((n) -> log.add("Norm value: " + n));
         
@@ -101,17 +90,11 @@ public class IterationSolver implements LinearSolver {
             Matrix e = a.multiply(x).add(b.negative());
             log.add("Error matrix:\n" + e);
             
-            List<Double> val = new ArrayList<>();
-            
-            for (int i = 0; i < x.sizeY(); i++) {
-                val.add(Math.abs(x.get(0, i) - prevX.get(0, i)));
-            }
-            
-            log.add("Difference: " + val.stream().reduce(val.get(0), Math::max));
+            log.add("Difference: " + x.add(prevX.negative()).rowNorm());
             log.add("Target difference: " + Constants.EPSILON * (1 - norm) / norm);
             log.add("");
             
-            if (val.stream().reduce(val.get(0), Math::max) <= Constants.EPSILON * (1 - norm) / norm) {
+            if (x.add(prevX.negative()).rowNorm() <= Constants.EPSILON * (1 - norm) / norm) {
                 finished = true;
             }
         }

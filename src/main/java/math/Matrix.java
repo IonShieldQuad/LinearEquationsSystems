@@ -551,6 +551,34 @@ public class Matrix {
         return m;
     }
     
+    public double rowNorm() {
+        List<Double> values = new ArrayList<>();
+    
+        for (int i = 0; i < sizeY(); i++) {
+            values.add(sumRow(i, Math::abs));
+        }
+        if (values.isEmpty()) {
+            return Double.NaN;
+        }
+        return values.stream().reduce(values.get(0), Math::max);
+    }
+    
+    public double columnNorm() {
+        List<Double> values = new ArrayList<>();
+    
+        for (int i = 0; i < sizeX(); i++) {
+            values.add(sumColumn(i, Math::abs));
+        }
+        if (values.isEmpty()) {
+            return Double.NaN;
+        }
+        return values.stream().reduce(values.get(0), Math::max);
+    }
+    
+    public double abs() {
+        return Math.sqrt(sum(d -> d * d));
+    }
+    
     protected void checkIndex(int x, int y) {
         checkIndexX(x);
         checkIndexY(y);
