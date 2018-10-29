@@ -3,10 +3,7 @@ package math;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 
 public class Matrix {
     
@@ -162,6 +159,13 @@ public class Matrix {
         }
     }
     
+    public Matrix forEach(Matrix matrix, BinaryOperator<Double> operation) {
+        if (matrix.sizeX != sizeX || matrix.sizeY != sizeY) {
+            throw new IllegalArgumentException("Invalid dimensions of input matrix");
+        }
+        return fill((i, j) -> operation.apply(get(i, j), matrix.get(i, j)));
+    }
+    
     public void forEachInRow(int row, Consumer<Double> action) {
         checkIndexY(row);
         for (int i = 0; i < sizeX; i++) {
@@ -174,6 +178,22 @@ public class Matrix {
         for (int i = 0; i < sizeY; i++) {
             action.accept(get(column, i));
         }
+    }
+    
+    public Matrix map(UnaryOperator<Double> mapper) {
+        return fill((i, j) -> mapper.apply(get(i, j)));
+    }
+    
+    public Double reduce(Double identity, BinaryOperator<Double> accumulator) {
+        Double[] value = {identity};
+        forEach(d -> value[0] = accumulator.apply(value[0], d));
+        return value[0];
+    }
+    
+    public <R> R collect(Supplier<R> supplier, BiConsumer<R, Double> accumulator) {
+        R result = supplier.get();
+        forEach(d -> accumulator.accept(result, d));
+        return result;
     }
     
     public Matrix swapRows(int a, int b) {
@@ -216,7 +236,7 @@ public class Matrix {
         return data.get(x).get(y);
     }
     
-    protected void set(int x, int y, double value) {
+    private void set(int x, int y, double value) {
         checkIndex(x, y);
         data.get(x).set(y, value);
     }
