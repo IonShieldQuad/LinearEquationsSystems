@@ -7,7 +7,6 @@ import math.SolutionException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.geom.Arc2D;
 
 public class MainWindow {
     

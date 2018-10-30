@@ -184,7 +184,7 @@ public class Matrix {
         return fill((i, j) -> mapper.apply(get(i, j)));
     }
     
-    public Double reduce(Double identity, BinaryOperator<Double> accumulator) {
+    public double reduce(Double identity, BinaryOperator<Double> accumulator) {
         Double[] value = {identity};
         forEach(d -> value[0] = accumulator.apply(value[0], d));
         return value[0];

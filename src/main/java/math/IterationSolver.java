@@ -43,7 +43,7 @@ public class IterationSolver implements LinearSolver {
                 return 0.0;
             }
             else {
-                return - a.get(i, j) / a.get(i, i);
+                return - a.get(i, j) / a.get(j, j);
             }
         });
         
@@ -65,7 +65,7 @@ public class IterationSolver implements LinearSolver {
     
         log.add("Min norm value: " + norm);
         
-        if (norm >= 1.0) {
+        if (Constants.CHECK_NORMS && norm >= 1.0) {
             throw new SolutionException("Matrix norm >= 1: cannot solve");
         }
         
@@ -90,11 +90,13 @@ public class IterationSolver implements LinearSolver {
             Matrix e = a.multiply(x).add(b.negative());
             log.add("Error matrix:\n" + e);
             
+            double targetDiff = Constants.CHECK_NORMS ? (Constants.EPSILON * (1 - norm) / norm) : Constants.EPSILON;
+            
             log.add("Difference: " + x.add(prevX.negative()).rowNorm());
-            log.add("Target difference: " + Constants.EPSILON * (1 - norm) / norm);
+            log.add("Target difference: " + targetDiff);
             log.add("");
             
-            if (x.add(prevX.negative()).rowNorm() <= Constants.EPSILON * (1 - norm) / norm) {
+            if (x.add(prevX.negative()).rowNorm() <= targetDiff) {
                 finished = true;
             }
         }
